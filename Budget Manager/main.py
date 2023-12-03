@@ -45,7 +45,6 @@ if __name__ == "__main__":
             cursor = db.cursor()
             cursor.execute("SELECT username, password FROM user")
             accounts = cursor.fetchall()
-            print(accounts)
             
             # if there are no accounts in the database
             if(len(accounts) == 0):
@@ -110,11 +109,90 @@ if __name__ == "__main__":
 
 
 
-    def login_frame():
-        # print("Login")
-        login_screen = Toplevel(main)
-        login_screen.title("Login Page")
+    def complete_login():
+        if(username.get() == "" or password.get() == ""):
+            print("All fields are required")
+            return
+        else:
+            cursor = db.cursor()
+            cursor.execute("SELECT username, password FROM user")
+            accounts = cursor.fetchall()
 
+            for i in range(len(accounts)):
+                if(accounts[i][0] == username.get() and accounts[i][1] == password.get()):
+                    print("Login successful!")
+                    budget_board()
+                    return
+            else:
+                print("Account doesn't exist. Please check your information or register an account")
+                return
+        
+        
+
+    def budget_board():
+        budget_frame = tkinter.Toplevel(main)
+        budget_frame.title("Budget Manager")
+
+        global monthly_expenses
+        global monthly_income
+        global budget_duration
+        global monthly_wants
+        global monthly_savings
+
+        monthly_expenses = tkinter.StringVar()
+        monthly_income = tkinter.StringVar()
+        budget_duration = tkinter.IntVar()
+        monthly_wants = tkinter.DoubleVar()
+        monthly_savings = tkinter.DoubleVar()
+
+        # labels
+        monthly_expenses_label = tkinter.Label(budget_frame, text="Enter total expenses of necessities")
+        monthly_income_label = tkinter.Label(budget_frame, text="Enter monthly income")
+        budget_duration_label = tkinter.Label(budget_frame, text="Enter duration of budget in months")
+        budget_wants_label = tkinter.Label(budget_frame, text="Select what percent of monthly income to save for 'wants'")
+        budget_savings_label = tkinter.Label(budget_frame, text="Select what percent of monthly income to put into savings")
+
+        # entries
+        monthly_expenses_entry = tkinter.Entry(budget_frame, textvariable=monthly_expenses)
+        monthly_income_entry = tkinter.Entry(budget_frame, textvariable=monthly_income)
+        budget_duration_entry = tkinter.Entry(budget_frame, textvariable=budget_duration)
+
+        # buttons
+        monthly_wants_10 = tkinter.Radiobutton(budget_frame, text="10%", variable=monthly_wants, value=0.1)
+        monthly_wants_20 = tkinter.Radiobutton(budget_frame, text="20%", variable=monthly_wants, value=0.2)
+        monthly_wants_30 = tkinter.Radiobutton(budget_frame, text="30%", variable=monthly_wants, value=0.3)
+        monthly_savings_10 = tkinter.Radiobutton(budget_frame, text="10%", variable=monthly_savings, value=0.1)
+        monthly_savings_20 = tkinter.Radiobutton(budget_frame, text="20%", variable=monthly_savings, value=0.2)
+        monthly_savings_30 = tkinter.Radiobutton(budget_frame, text="30%", variable=monthly_savings, value=0.3)
+        submit_button = tkinter.Button(budget_frame, text="SUBMIT", command=budget_info)
+
+        # grid
+        monthly_expenses_label.grid(row=0, column=0)
+        monthly_expenses_entry.grid(row=0, column=1)
+        monthly_income_label.grid(row=1, column=0)
+        monthly_income_entry.grid(row=1, column=1)
+        budget_duration_label.grid(row=2, column=0)
+        budget_duration_entry.grid(row=2, column=1)
+        budget_wants_label.grid(row=3, column=0)
+        monthly_wants_10.grid(row=3, column=1)
+        monthly_wants_20.grid(row=3, column=2)
+        monthly_wants_30.grid(row=3, column=3)
+        budget_savings_label.grid(row=4, column=0)
+        monthly_savings_10.grid(row=4, column=1)
+        monthly_savings_20.grid(row=4, column=2)
+        monthly_savings_30.grid(row=4, column=3)
+        submit_button.grid(row=5, column=1)
+
+
+        def budget_info():
+            info_frame = tkinter.Toplevel(main)
+            info_frame.title("Budget Info")
+
+            income = monthly_income.get()
+            expenses = monthly_expenses.get()
+            wants = monthly_wants.get()
+            savings = monthly_savings.get()
+            duration = budget_duration.get()
 
 
 
@@ -127,9 +205,9 @@ if __name__ == "__main__":
     username = tkinter.StringVar()
     password = tkinter.StringVar()
     
-    login_button = tkinter.Button(main, text="LOGIN", command = login_frame)
-    register_button = tkinter.Button(main, text="REGISTER", command = register_frame)
-    continue_button = tkinter.Button(main, text="CONTINUE WITHOUT\n REGISTERING", command = register_frame) # change the command for this button
+    login_button = tkinter.Button(main, text="LOGIN", command=complete_login)
+    register_button = tkinter.Button(main, text="REGISTER", command=register_frame)
+    continue_button = tkinter.Button(main, text="CONTINUE WITHOUT\n REGISTERING", command = budget_board) # change the command for this button
     username_label = tkinter.Label(main, text="Username")
     password_label = tkinter.Label(main, text="Password")
     username_entry = tkinter.Entry(main, textvariable=username)
