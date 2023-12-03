@@ -19,12 +19,45 @@ if __name__ == "__main__":
     db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "Mr_Kaboom1939")
+    password = "Mr_Kaboom1939",
+    database = "budget_manager")
     
     # Creates main menu
     main = tkinter.Tk()
     main.title("Budget Manager")
     
+
+
+    def complete_registration():
+        username = register_username.get()
+        password = register_password.get()
+        password_verification = register_password_verification.get()
+
+
+        if(username == "" or password == "" or password_verification == ""):
+            print("All fields are required")
+            return
+        elif(password != password_verification):
+            print("Your password must be the same in both fields")
+            return
+        else:
+            # print("Registration successful!")
+            cursor = db.cursor()
+            cursor.execute("SELECT username, password FROM user")
+            accounts = cursor.fetchall()
+
+            for i in range(len(accounts)):
+                if(username == accounts[i][0] or password == accounts[i][1]):
+                    print("Username or password already exists")
+                    return
+                else:
+                    query = "INSERT INTO user(username, password) VALUES(%s, %s)"
+                    value = (username, password)
+                    cursor.execute(query, value)
+                    db.commit()
+                    print("Registration successful!")
+                    return
+
 
 
 
@@ -34,7 +67,7 @@ if __name__ == "__main__":
         global register_password_verification
         
         register_screen = Toplevel(main)
-        register_screen.title("Register Page")
+        register_screen.title("Registration Page")
 
         register_username = tkinter.StringVar()
         register_password = tkinter.StringVar()
@@ -52,7 +85,7 @@ if __name__ == "__main__":
         register_password_verification_entry = tkinter.Entry(register_screen, textvariable=register_password_verification, show="*")
 
         # button
-        register_button = tkinter.Button(register_screen, text="REGISTER", command=filler)
+        register_button = tkinter.Button(register_screen, text="REGISTER", command=complete_registration)
 
         # grid
         register_info_label.grid(row=0, column=0, columnspan=2)
@@ -101,4 +134,4 @@ if __name__ == "__main__":
     
     
     tkinter.mainloop()
-    
+    db.close()
