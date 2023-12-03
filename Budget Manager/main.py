@@ -45,19 +45,29 @@ if __name__ == "__main__":
             cursor = db.cursor()
             cursor.execute("SELECT username, password FROM user")
             accounts = cursor.fetchall()
+            print(accounts)
+            
+            # if there are no accounts in the database
+            if(len(accounts) == 0):
+                query = "INSERT INTO user(username, password) VALUES(%s, %s)"
+                value = (username, password)
+                cursor.execute(query, value)
+                db.commit()
+                print("Registration successful!")
+                return
 
             for i in range(len(accounts)):
+                print(accounts[i][0], accounts[i][1])
                 if(username == accounts[i][0] or password == accounts[i][1]):
                     print("Username or password already exists")
                     return
-                else:
-                    query = "INSERT INTO user(username, password) VALUES(%s, %s)"
-                    value = (username, password)
-                    cursor.execute(query, value)
-                    db.commit()
-                    print("Registration successful!")
-                    return
-
+            else:
+                query = "INSERT INTO user(username, password) VALUES(%s, %s)"
+                value = (username, password)
+                cursor.execute(query, value)
+                db.commit()
+                print("Registration successful!")
+                return
 
 
 
@@ -100,11 +110,12 @@ if __name__ == "__main__":
 
 
 
-
     def login_frame():
         # print("Login")
         login_screen = Toplevel(main)
         login_screen.title("Login Page")
+
+
 
 
     def filler():
