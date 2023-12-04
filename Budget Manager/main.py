@@ -57,7 +57,6 @@ if __name__ == "__main__":
                 return
 
             for i in range(len(accounts)):
-                print(accounts[i][0], accounts[i][1])
                 if(username == accounts[i][0] or password == accounts[i][1]):
                     print("Username or password already exists")
                     return
