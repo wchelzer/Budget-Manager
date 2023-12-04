@@ -8,9 +8,7 @@
 import tkinter
 import mysql.connector
 
-from tkinter import messagebox
 from tkinter import Toplevel
-from tkinter import filedialog
 
 
 if __name__ == "__main__":
@@ -232,8 +230,6 @@ if __name__ == "__main__":
 
 
     def info():
-        print("You clicked me!")
-
         cursor = db.cursor()
         query = "SELECT monthly_income FROM user WHERE username=%s AND password=%s;"
         values = (username.get(), password.get())
