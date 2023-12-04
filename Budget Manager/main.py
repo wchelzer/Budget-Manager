@@ -121,7 +121,7 @@ if __name__ == "__main__":
             for i in range(len(accounts)):
                 if(accounts[i][0] == username.get() and accounts[i][1] == password.get()):
                     print("Login successful!")
-                    budget_input()
+                    dashboard()
                     return
             else:
                 print("Account doesn't exist. Please check your information or register an account")
@@ -140,11 +140,20 @@ if __name__ == "__main__":
                 print("Your monthly income does not cover your expenses")
                 return
             else:
-                print(f"Info: {income}, {expenses}, {savings_percent}, {duration}")
+                # calculations
+                monthly_disposable = income - expenses
 
+                new_monthly_savings = monthly_disposable * savings_percent
+                total_savings = monthly_disposable * savings_percent * duration
+
+                new_monthly_wants = monthly_disposable - new_monthly_savings
+                total_wants = (monthly_disposable - new_monthly_savings) * duration
+
+                # insert budget info into database
                 cursor = db.cursor()
-                query = "UPDATE user SET monthly_income=%s, expenses=%s, savings=%s WHERE username=%s AND password=%s;"
-                values = (income, expenses, savings_percent, username.get(), password.get())
+                query = """UPDATE user SET monthly_income=%s, monthly_expenses=%s, duration=%s, monthly_wants=%s, monthly_savings=%s, total_wants=%s, 
+                        total_savings=%s WHERE username=%s AND password=%s;"""
+                values = (income, expenses, duration, new_monthly_wants, new_monthly_savings, total_wants, total_savings, username.get(), password.get())
                 cursor.execute(query, values)
                 db.commit()
                 print("Values submited!")
@@ -152,20 +161,11 @@ if __name__ == "__main__":
                 info_frame = tkinter.Toplevel(main)
                 info_frame.title("Budget Info")
                 
-                # calculations
-                monthly_disposable = income - expenses
-                new_monthly_savings = monthly_disposable * savings_percent
-                total_savings = monthly_disposable * savings_percent * duration
-                new_monthly_wants = monthly_disposable - new_monthly_savings
-                total_wants = monthly_disposable - new_monthly_savings * duration
 
                 # labels
                 monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses : ${expenses}")
-
                 monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income : ${income}")
-                
                 duration_label = tkinter.Label(info_frame, text= f"Total duration : {duration} months")
-                
                 monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for 'wants' : ${new_monthly_wants}")
                 monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings : ${new_monthly_savings}")
                 total_wants_label = tkinter.Label(info_frame, text= f"Total money for 'wants' : ${total_wants}")
@@ -183,18 +183,17 @@ if __name__ == "__main__":
 
 
 
-
     def budget_input():
         budget_frame = tkinter.Toplevel(main)
-        budget_frame.title("Budget Manager")
+        budget_frame.title("Budget Input")
 
         global monthly_expenses
         global monthly_income
         global budget_duration
         global monthly_savings
 
-        monthly_expenses = tkinter.IntVar()
-        monthly_income = tkinter.IntVar()
+        monthly_expenses = tkinter.DoubleVar()
+        monthly_income = tkinter.DoubleVar()
         budget_duration = tkinter.IntVar()
         monthly_savings = tkinter.DoubleVar()
 
@@ -229,6 +228,62 @@ if __name__ == "__main__":
         submit_button.grid(row=4, column=1)
 
 
+    def info():
+        print("You clicked me!")
+
+        cursor = db.cursor()
+        query = "SELECT monthly_income FROM user WHERE username=%s AND password=%s;"
+        values = (username.get(), password.get())
+        
+        cursor.execute(query, values)
+        user = cursor.fetchall()
+
+        if(str(user[0][0]) == 'None'):
+            print("No budget info")
+            return
+        else:
+            print("Success!")
+
+            info_frame = tkinter.Toplevel(main)
+            info_frame.title("Budget Info")
+            
+            query = """SELECT monthly_income, monthly_expenses, duration, monthly_wants, monthly_savings, total_wants, 
+                    total_savings FROM user WHERE username=%s AND password=%s"""
+            values = (username.get(), password.get())
+            cursor.execute(query, values)
+            user_info = cursor.fetchall()
+            print(user_info)
+
+            # labels
+            monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses : ${user_info[0][1]}")
+            monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income : ${user_info[0][0]}")
+            duration_label = tkinter.Label(info_frame, text= f"Total duration : {user_info[0][2]} months")
+            monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for 'wants' : ${user_info[0][3]}")
+            monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings : ${user_info[0][4]}")
+            total_wants_label = tkinter.Label(info_frame, text= f"Total money for 'wants' : ${user_info[0][5]}")
+            total_savings_label = tkinter.Label(info_frame, text= f"Total savings : ${user_info[0][6]}")
+
+            # grid
+            monthly_expenses_label.grid(row=0, column=0)
+            monthly_income_label.grid(row=1, column=0)
+            duration_label.grid(row=2, column=0)
+            monthly_wants_label.grid(row=3, column=0)
+            monthly_savings_label.grid(row=4, column=0)
+            total_wants_label.grid(row=5, column=0)
+            total_savings_label.grid(row=6, column=0)
+        
+    
+
+
+    def dashboard():
+        dashboard_frame = tkinter.Toplevel(main)
+        dashboard_frame.title("Dashboard")
+
+        info_button = tkinter.Button(dashboard_frame, text="Info", command=info)
+        edit_create_budget = tkinter.Button(dashboard_frame, text="Edit or Create Budget", command=budget_input)
+
+        info_button.grid(row=0, column=1)
+        edit_create_budget.grid(row=1, column=1)
 
 
     def filler():
@@ -242,7 +297,7 @@ if __name__ == "__main__":
     
     login_button = tkinter.Button(main, text="LOGIN", command=complete_login)
     register_button = tkinter.Button(main, text="REGISTER", command=register_frame)
-    continue_button = tkinter.Button(main, text="CONTINUE WITHOUT\n REGISTERING", command = budget_input) # change the command for this button
+    #continue_button = tkinter.Button(main, text="CONTINUE WITHOUT\n REGISTERING", command = budget_input) # change the command for this button
     username_label = tkinter.Label(main, text="Username")
     password_label = tkinter.Label(main, text="Password")
     username_entry = tkinter.Entry(main, textvariable=username)
@@ -252,9 +307,9 @@ if __name__ == "__main__":
     username_entry.grid(row=0, column=1)
     password_label.grid(row=1, column=0)
     password_entry.grid(row=1, column=1)
-    login_button.grid(row=0, column=2, rowspan=2)
-    register_button.grid(row=2, column=0)
-    continue_button.grid(row=2, column=1)
+    login_button.grid(row=2, column=0)
+    register_button.grid(row=2, column=1)
+    #continue_button.grid(row=2, column=1)
     
     
     tkinter.mainloop()
