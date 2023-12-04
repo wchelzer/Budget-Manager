@@ -1,6 +1,6 @@
 # Author: Wyatt Helzer
 # Creation Date: 12/1/2023
-# Date Last Updated: 12/2/2023
+# Date Last Updated: 12/3/2023
 # Function: ...
 
 #---------------------------------------------------------------------------------------------
@@ -25,6 +25,7 @@ if __name__ == "__main__":
     # Creates main menu
     main = tkinter.Tk()
     main.title("Budget Manager")
+    main.geometry("300x150")
     
 
 
@@ -66,7 +67,6 @@ if __name__ == "__main__":
                 cursor.execute(query, value)
                 db.commit()
                 print("Registration successful!")
-                return
 
 
 
@@ -77,16 +77,17 @@ if __name__ == "__main__":
         
         register_screen = Toplevel(main)
         register_screen.title("Registration Page")
+        register_screen.geometry("300x165")
 
         register_username = tkinter.StringVar()
         register_password = tkinter.StringVar()
         register_password_verification = tkinter.StringVar()
 
         # labels
-        register_info_label = tkinter.Label(register_screen, text="Enter new login information")
-        register_username_label = tkinter.Label(register_screen, text="Username")
-        register_password_label = tkinter.Label(register_screen, text="Password")
-        register_password_verification_label = tkinter.Label(register_screen, text="Confirm your password")
+        register_info_label = tkinter.Label(register_screen, text="Enter new login information", font=("13"))
+        register_username_label = tkinter.Label(register_screen, text="Username: ", font=("13"))
+        register_password_label = tkinter.Label(register_screen, text="Password: ", font=("13"))
+        register_password_verification_label = tkinter.Label(register_screen, text="Confirm your password: ", font=("10"))
 
         # entries
         register_username_entry = tkinter.Entry(register_screen, textvariable=register_username)
@@ -94,17 +95,17 @@ if __name__ == "__main__":
         register_password_verification_entry = tkinter.Entry(register_screen, textvariable=register_password_verification, show="*")
 
         # button
-        register_button = tkinter.Button(register_screen, text="REGISTER", command=complete_registration)
+        register_button = tkinter.Button(register_screen, text="REGISTER", command=complete_registration, width=20)
 
         # grid
-        register_info_label.grid(row=0, column=0, columnspan=2)
+        register_info_label.grid(row=0, column=0, columnspan=2, pady=15)
         register_username_label.grid(row=1, column=0)
         register_username_entry.grid(row=1, column=1)
         register_password_label.grid(row=2, column=0)
         register_password_entry.grid(row=2, column=1)
         register_password_verification_label.grid(row=3, column=0)
         register_password_verification_entry.grid(row=3, column=1)
-        register_button.grid(row=4, column=1)
+        register_button.grid(row=4, column=0, columnspan=2, pady=5)
 
 
 
@@ -125,8 +126,8 @@ if __name__ == "__main__":
                     return
             else:
                 print("Account doesn't exist. Please check your information or register an account")
-                return
         
+
     def budget_info():
             income = monthly_income.get()
             expenses = monthly_expenses.get()
@@ -160,16 +161,17 @@ if __name__ == "__main__":
 
                 info_frame = tkinter.Toplevel(main)
                 info_frame.title("Budget Info")
+                info_frame.geometry("250x200")
                 
 
                 # labels
-                monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses : ${expenses}")
-                monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income : ${income}")
-                duration_label = tkinter.Label(info_frame, text= f"Total duration : {duration} months")
-                monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for 'wants' : ${new_monthly_wants}")
-                monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings : ${new_monthly_savings}")
-                total_wants_label = tkinter.Label(info_frame, text= f"Total money for 'wants' : ${total_wants}")
-                total_savings_label = tkinter.Label(info_frame, text= f"Total savings : ${total_savings}")
+                monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses : ${expenses}", font=("10"))
+                monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income : ${income}", font=("10"))
+                duration_label = tkinter.Label(info_frame, text= f"Total duration : {duration} months", font=("10"))
+                monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for 'wants' : ${new_monthly_wants}", font=("10"))
+                monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings : ${new_monthly_savings}", font=("10"))
+                total_wants_label = tkinter.Label(info_frame, text= f"Total money for 'wants' : ${total_wants}", font=("10"))
+                total_savings_label = tkinter.Label(info_frame, text= f"Total savings : ${total_savings}", font=("10"))
 
                 # grid
                 monthly_expenses_label.grid(row=0, column=0)
@@ -198,34 +200,36 @@ if __name__ == "__main__":
         monthly_savings = tkinter.DoubleVar()
 
         # labels
-        monthly_expenses_label = tkinter.Label(budget_frame, text="Enter total expenses of necessities")
-        monthly_income_label = tkinter.Label(budget_frame, text="Enter monthly income")
-        budget_duration_label = tkinter.Label(budget_frame, text="Enter duration of budget in months")
-        budget_savings_label = tkinter.Label(budget_frame, text="Select what percent of monthly income to put into savings")
+        budget_frame_label = tkinter.Label(budget_frame, text="Enter your budget information", font=(7))
+        monthly_expenses_label = tkinter.Label(budget_frame, text="Enter total expenses of necessities:")
+        monthly_income_label = tkinter.Label(budget_frame, text="Enter monthly income:")
+        budget_duration_label = tkinter.Label(budget_frame, text="Enter duration of budget in months:")
+        budget_savings_label = tkinter.Label(budget_frame, text="Select what percent of monthly income to put into savings:")
 
         # entries
-        monthly_expenses_entry = tkinter.Entry(budget_frame, textvariable=monthly_expenses)
-        monthly_income_entry = tkinter.Entry(budget_frame, textvariable=monthly_income)
-        budget_duration_entry = tkinter.Entry(budget_frame, textvariable=budget_duration)
+        monthly_expenses_entry = tkinter.Entry(budget_frame, textvariable=monthly_expenses, width=10)
+        monthly_income_entry = tkinter.Entry(budget_frame, textvariable=monthly_income, width=10)
+        budget_duration_entry = tkinter.Entry(budget_frame, textvariable=budget_duration, width=10)
 
         # buttons
         monthly_savings_10 = tkinter.Radiobutton(budget_frame, text="10%", variable=monthly_savings, value=0.1)
         monthly_savings_20 = tkinter.Radiobutton(budget_frame, text="20%", variable=monthly_savings, value=0.2)
         monthly_savings_30 = tkinter.Radiobutton(budget_frame, text="30%", variable=monthly_savings, value=0.3)
-        submit_button = tkinter.Button(budget_frame, text="SUBMIT", command=budget_info)
+        submit_button = tkinter.Button(budget_frame, text="SUBMIT", command=budget_info, width=30)
 
         # grid
-        monthly_expenses_label.grid(row=0, column=0)
-        monthly_expenses_entry.grid(row=0, column=1)
-        monthly_income_label.grid(row=1, column=0)
-        monthly_income_entry.grid(row=1, column=1)
-        budget_duration_label.grid(row=2, column=0)
-        budget_duration_entry.grid(row=2, column=1)
-        budget_savings_label.grid(row=3, column=0)
-        monthly_savings_10.grid(row=3, column=1)
-        monthly_savings_20.grid(row=3, column=2)
-        monthly_savings_30.grid(row=3, column=3)
-        submit_button.grid(row=4, column=1)
+        budget_frame_label.grid(row=0, column=0, columnspan=3, pady=7)
+        monthly_expenses_label.grid(row=1, column=0)
+        monthly_expenses_entry.grid(row=1, column=1)
+        monthly_income_label.grid(row=2, column=0)
+        monthly_income_entry.grid(row=2, column=1)
+        budget_duration_label.grid(row=3, column=0)
+        budget_duration_entry.grid(row=3, column=1)
+        budget_savings_label.grid(row=4, column=0)
+        monthly_savings_10.grid(row=4, column=1)
+        monthly_savings_20.grid(row=4, column=2)
+        monthly_savings_30.grid(row=4, column=3)
+        submit_button.grid(row=5, column=0, columnspan=3, pady=5)
 
 
     def info():
@@ -246,22 +250,22 @@ if __name__ == "__main__":
 
             info_frame = tkinter.Toplevel(main)
             info_frame.title("Budget Info")
+            info_frame.geometry("250x200")
             
             query = """SELECT monthly_income, monthly_expenses, duration, monthly_wants, monthly_savings, total_wants, 
                     total_savings FROM user WHERE username=%s AND password=%s"""
             values = (username.get(), password.get())
             cursor.execute(query, values)
             user_info = cursor.fetchall()
-            print(user_info)
 
             # labels
-            monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses : ${user_info[0][1]}")
-            monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income : ${user_info[0][0]}")
-            duration_label = tkinter.Label(info_frame, text= f"Total duration : {user_info[0][2]} months")
-            monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for 'wants' : ${user_info[0][3]}")
-            monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings : ${user_info[0][4]}")
-            total_wants_label = tkinter.Label(info_frame, text= f"Total money for 'wants' : ${user_info[0][5]}")
-            total_savings_label = tkinter.Label(info_frame, text= f"Total savings : ${user_info[0][6]}")
+            monthly_expenses_label = tkinter.Label(info_frame, text= f"Monthly expenses: ${user_info[0][1]}", font=("10"))
+            monthly_income_label = tkinter.Label(info_frame, text= f"Monthly income: ${user_info[0][0]}", font=("10"))
+            duration_label = tkinter.Label(info_frame, text= f"Total duration: {user_info[0][2]} months", font=("10"))
+            monthly_wants_label = tkinter.Label(info_frame, text= f"Monthly money for wants: ${user_info[0][3]}", font=("10"))
+            monthly_savings_label = tkinter.Label(info_frame, text= f"Monthly savings: ${user_info[0][4]}", font=("10"))
+            total_wants_label = tkinter.Label(info_frame, text= f"Total money for wants: ${user_info[0][5]}", font=("10"))
+            total_savings_label = tkinter.Label(info_frame, text= f"Total savings: ${user_info[0][6]}", font=("10"))
 
             # grid
             monthly_expenses_label.grid(row=0, column=0)
@@ -272,22 +276,18 @@ if __name__ == "__main__":
             total_wants_label.grid(row=5, column=0)
             total_savings_label.grid(row=6, column=0)
         
-    
 
 
     def dashboard():
         dashboard_frame = tkinter.Toplevel(main)
         dashboard_frame.title("Dashboard")
+        dashboard_frame.geometry("240x120")
 
-        info_button = tkinter.Button(dashboard_frame, text="Info", command=info)
-        edit_create_budget = tkinter.Button(dashboard_frame, text="Edit or Create Budget", command=budget_input)
+        info_button = tkinter.Button(dashboard_frame, text="Info", command=info, width=20, height=2)
+        edit_create_budget = tkinter.Button(dashboard_frame, text="Edit or Create Budget", command=budget_input, width=20, height=2)
 
-        info_button.grid(row=0, column=1)
-        edit_create_budget.grid(row=1, column=1)
-
-
-    def filler():
-        print("You clicked me!")
+        info_button.grid(row=0, column=0, columnspan=1, padx=43, pady=3)
+        edit_create_budget.grid(row=1, column=0, columnspan=1, padx=43, pady=3)
 
 
 
@@ -295,20 +295,21 @@ if __name__ == "__main__":
     username = tkinter.StringVar()
     password = tkinter.StringVar()
     
-    login_button = tkinter.Button(main, text="LOGIN", command=complete_login)
-    register_button = tkinter.Button(main, text="REGISTER", command=register_frame)
+    login_button = tkinter.Button(main, text="LOGIN", command=complete_login, width=20) 
+    register_button = tkinter.Button(main, text="REGISTER", command=register_frame, width=20)
     #continue_button = tkinter.Button(main, text="CONTINUE WITHOUT\n REGISTERING", command = budget_input) # change the command for this button
-    username_label = tkinter.Label(main, text="Username")
-    password_label = tkinter.Label(main, text="Password")
+    username_label = tkinter.Label(main, text="Username: ", font=("Calibri, 13"), padx=5)
+    password_label = tkinter.Label(main, text="Password: ", font=("Calibri, 13"), padx=5)
     username_entry = tkinter.Entry(main, textvariable=username)
     password_entry = tkinter.Entry(main, textvariable=password, show="*")
     
+    # grid
     username_label.grid(row=0, column=0)
     username_entry.grid(row=0, column=1)
     password_label.grid(row=1, column=0)
     password_entry.grid(row=1, column=1)
-    login_button.grid(row=2, column=0)
-    register_button.grid(row=2, column=1)
+    login_button.grid(row=2, column=0, columnspan=2, pady=5)
+    register_button.grid(row=3, column=0, columnspan=2, pady=5)
     #continue_button.grid(row=2, column=1)
     
     
